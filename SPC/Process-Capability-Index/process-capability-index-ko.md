@@ -1,0 +1,360 @@
+# Process Capability Indices
+Rev. 37 | Created: 2026-09-04 | Updated: 2026-09-29 11:54 CDT
+
+- [1. Scope](#1-scope)
+- [2. Definitions](#2-definitions)
+  - [2.1. Potential Capability](#21-potential-capability)
+  - [2.2. Centring](#22-centring)
+  - [2.3. Achieved Capability](#23-achieved-capability)
+- [3. Physical Meaning](#3-physical-meaning)
+  - [3.1. Reading the Three Together](#31-reading-the-three-together)
+  - [3.2. Defect Rate](#32-defect-rate)
+  - [3.3. Parts per Million and Yield](#33-parts-per-million-and-yield)
+- [4. Application](#4-application)
+  - [4.1. Short-Term and Long-Term](#41-short-term-and-long-term)
+  - [4.2. Assumptions](#42-assumptions)
+  - [4.3. In the Fab](#43-in-the-fab)
+  - [4.4. Priority Classes](#44-priority-classes)
+- [References](#references)
+- [Appendix A. Terminology](#appendix-a-terminology)
+- [Appendix B. Derivation of Equation (5)](#appendix-b-derivation-of-equation-5)
+
+> 공정을 규격에 견주는 세 지표에 대한 기록. 산포를 보는 $C_p$, 치우침을 보는 $k$, 그리고 그 둘이 함께
+> 만들어내는 $C_{pk}$ 를 다룬다.
+
+## 1. Scope
+
+관리도는 공정이 안정한지를 말한다. 그 공정이 합격품을 만드는지는 말하지 않는다. 관리도는 공정 자신의
+변동에서 만들어질 뿐 규격을 보지 않기 때문이다. 공정능력 지수는 그 짝의 나머지 절반이다. 공정의 분포를
+Specification limit 에 견주어, 여유가 얼마나 남았는지를 하나의 수로 돌려준다.
+
+이 문서는 $C_p$, $k$, $C_{pk}$ 를 정의하고 각각이 무엇을 재는지 밝히며, 왜 셋을 따로가 아니라 함께
+읽어야 하는지를 보이고, 이 수들이 뜻을 가지는 전제를 정리한다. 본문에서 정의 없이 쓴 용어는
+[Appendix A](#appendix-a-terminology) 에 모았다.
+
+## 2. Definitions
+
+이하에서 공정은 평균 $\mu$, 표준편차 $\sigma$ 인 정규분포를 따르고, 규격은 아래한계 `LSL` 과
+위한계 `USL` 을 가진다. 규격의 중점을 $m$ 이라 적는다.
+
+### 2.1. Potential Capability
+
+$C_p$ 는 규격이 허용하는 폭과 공정이 차지하는 폭을 견준다. 여기서 공정의 폭은 $6\sigma$ 로 잡는다
+[[1](#ref-1)].
+
+$$C_p = \frac{USL - LSL}{6\sigma} \hspace{19em} (1)$$
+
+이 지수에는 $\mu$ 가 들어 있지 않다. 그래서 산포에 대한 질문 하나에만 답한다. 공정이 중심에 있다면
+여유가 얼마나 되겠는가 하는 것이다. 잠재 공정능력이라 부르는 이유가 여기에 있다. $C_p = 2$ 인 공정은
+규격 폭의 절반을 차지하므로 중심에서 꽤 벗어나도 규격을 벗어난 것을 만들지 않지만, $C_p = 1$ 인
+공정은 규격을 정확히 채우고 있어 여유가 전혀 없다.
+
+### 2.2. Centring
+
+$k$ 는 공정 평균이 규격의 가운데에서 얼마나 떨어져 있는지를, 규격 반폭에 대한 비율로 잰다.
+
+$$m = \frac{USL + LSL}{2}, \qquad k = \frac{\left| m - \mu \right|}{(USL - LSL)/2} \hspace{19em} (2)$$
+
+이 지수는 규격 안에서 0 부터 1 까지의 값을 가진다. $k = 0$ 이면 완전히 중심에 있고, $k = 0.25$ 이면
+평균이 가운데에서 한계 쪽으로 4 분의 1 만큼 옮겨간 것이며, $k = 1$ 이면 평균이 한계 위에 있다.
+$C_p$ 와 마찬가지로 이것도 질문의 절반에만 답한다. $\sigma$ 가 들어 있지 않으므로 공정이 얼마나
+넓은지는 말하지 않는다.
+
+### 2.3. Achieved Capability
+
+$C_{pk}$ 는 평균에서 가까운 쪽 specification limit 까지의 거리를 $3\sigma$ 단위로 재므로, 산포와 치우침을 함께
+담는다.
+
+$$CPU = \frac{USL - \mu}{3\sigma}, \qquad CPL = \frac{\mu - LSL}{3\sigma}, \qquad C_{pk} = \min\left( CPU, CPL \right) \hspace{19em} (3)$$
+
+세 지수는 서로 독립이 아니다. 식 (1) 과 식 (2) 를 식 (3) 에 넣으면 $C_{pk}$ 는 치우침만큼 깎인
+$C_p$ 로 나온다.
+
+$$C_{pk} = (1 - k) C_p \hspace{19em} (4)$$
+
+식 (4) 가 셋 사이 관계의 전부이다. $C_p$ 는 산포가 가능하게 하는 것이고, $k$ 는 치우침이 그 잠재력
+가운데 내주는 비율이며, $C_{pk}$ 는 남은 것이다. 따라서 언제나 $C_{pk} \le C_p$ 이고, 등호는 공정이
+중심 ($k = 0$) 에 있을 때만 성립한다.
+
+## 3. Physical Meaning
+
+### 3.1. Reading the Three Together
+
+어느 지수 하나도 불량률을 정하지 못하며, Fig 1 이 그 증명이다.
+
+<img src="process-capability-index_fig/process_capability_index.png" width="1000" style="max-width: 100%;" alt="Fig 1">
+
+Fig 1. Three processes against the same specification, LSL 90 and USL 110, drawn on one density
+scale. The dotted line is the process mean and each panel is labelled with its indices and with the
+fraction outside the specification, which is far too small an area to see at this scale.
+
+(a) 와 (b) 는 $C_p$ 가 1.33 으로 같고 치우침만 다른데, 그 차이가 불량률에서 스무 배를 만든다.
+1350 ppm 과 63 ppm 이다. (a) 에서 문제는 산포가 아니므로 산포를 붙들고 씨름하는 것은 헛일이다. 평균을
+100 으로 되돌리면 공정 변동은 하나도 건드리지 않고 (a) 가 (b) 가 된다.
+
+(a) 와 (c) 는 반대 경우이다. 둘 다 $C_{pk} = 1.00$ 이지만 (a) 는 1350 ppm, (c) 는 2700 ppm 을
+만들며, 필요한 작업이 전혀 다르다. (a) 의 공정은 좁고 어긋나 있으므로 대개 설정값을 조정하면 되는
+문제이다. (c) 의 공정은 중심에 있으면서 너무 넓으므로 변동 자체를 줄여야 하고, 조정으로는 아무것도
+해결되지 않는다. $C_{pk}$ 만 따로 인용하면 이 구별이 감춰진다.
+
+Table 1. What the pair of indices indicates.
+
+| Condition | Reading | Action |
+|---|---|---|
+| $C_p$ 큼, $k$ 는 0 근처 | 능력이 있고 중심에 있음 | 유지 |
+| $C_p$ 큼, $k$ 도 큼 | 능력은 있으나 어긋남 | 평균을 옮김 |
+| $C_p$ 작음, $k$ 는 0 근처 | 중심에 있으나 너무 넓음 | 변동을 줄임 |
+| $C_p$ 작음, $k$ 는 큼 | 둘 다 잘못됨 | 먼저 중심을 맞추고 그 다음 변동을 줄임 |
+
+마지막 행의 순서에는 이유가 있다. 중심을 맞추는 일은 대개 설정값 변경이라 싸고, 변동을 줄이는 일은
+대개 하드웨어나 recipe 나 재료를 바꾸는 일이라 비싸다. 식 (4) 는 싼 쪽의 조치가 $1/(1-k)$ 배를 곧바로
+되찾아 준다고 말한다.
+
+### 3.2. Defect Rate
+
+정규분포 model 아래에서 이 지수들은 규격을 벗어나는 비율로 바로 환산된다. 중심에 있는 공정은 양쪽
+꼬리가 함께 기여하므로 비율이 $C_p$ 를 따르고, 치우친 공정은 가까운 쪽 꼬리가 지배하므로 비율이
+$C_{pk}$ 를 따른다. 유도는 [Appendix B](#appendix-b-derivation-of-equation-5) 에 있다.
+
+$p$ 는 공정이 만든 개수 가운데 $LSL$ 아래나 $USL$ 위로 벗어나는 개수의 비율, 곧 불량률이다. $\Phi$ 는 표준정규분포의 cumulative distribution function 이며, $\Phi(a)$ 는 표준정규분포를 따르는 값이 $a$ 이하일 확률이다.
+
+$$p = \Phi\left( -3 CPL \right) + \Phi\left( -3 CPU \right) \hspace{19em} (5)$$
+
+Table 2. Defect rate of a centred process, in parts per million.
+
+| Cp | Cpk | k | Sigma level | Both tails, ppm | Near tail, ppm |
+|---:|---:|---:|---:|---:|---:|
+| 0.67 | 0.67 | 0 | 2.0 | 44431 | 22216 |
+| 1.00 | 1.00 | 0 | 3.0 | 2700 | 1350 |
+| 1.33 | 1.33 | 0 | 4.0 | 66.1 | 33.0 |
+| 1.67 | 1.67 | 0 | 5.0 | 0.544 | 0.272 |
+| 2.00 | 2.00 | 0 | 6.0 | 0.00197 | 0.000987 |
+
+One-side tail 은 어느 쪽인지를 알려 주지 않고, near tail 은 평균에서 가까운 쪽 specification limit 의 tail 을 가리킨다.
+
+```math
+\begin{cases}
+USL = \mu + 3 C_{pk} \sigma & \mathrm{if}\ USL\ \mathrm{is\ the\ nearer\ limit} \\
+LSL = \mu - 3 C_{pk} \sigma & \mathrm{if}\ LSL\ \mathrm{is\ the\ nearer\ limit}
+\end{cases}
+\hspace{19em} (6)
+```
+
+$C_{pk}$ 는 평균에서 그 한계까지의 거리를 $3\sigma$ 로 나눈 값이므로, 그 한계는 식 (6) 처럼 평균에서 표준편차 $3 C_{pk}$ 개만큼 떨어져 있다. 즉, sigma level (z-score) 이 $3 C_{pk}$ 이다. 표준정규분포에서 $-3 C_{pk}$ 이하가 나올 확률이 $\Phi(-3 C_{pk})$ 이고, 분포가 좌우 대칭이므로 $+3 C_{pk}$ 이상이 나올 확률도 같다. 따라서 가까운 쪽 한계가 $LSL$ 이든 $USL$ 이든 near tail 의 비율은 $\Phi(-3 C_{pk})$ 이다. 예를 들어 $C_{pk} = 1.00$ 이면 한계가 표준편차 3 개 거리에 있고 $\Phi(-3) = 0.00135$ 이므로, near tail 은 1350 ppm 이다.
+
+Fig 2 는 $C_{pk} = 1.00$ 인 공정의 near tail 을 그린 것이다.
+
+<img src="process-capability-index_fig/near_tail.png" width="1000" style="max-width: 100%;" alt="Fig 2">
+
+Fig 2. Near tail of a process with Cpk = 1.00, drawn on the standard normal density. The left column
+puts the nearer limit 3 standard deviations below the mean and the right column 3 above it.
+The y axis is the standard normal probability density $\varphi(z)$ of equation (9); its height is not
+a probability, but its area over an interval is the probability of falling in that interval, so the
+shaded area is the near tail rate.
+In the top row the band marks the region beyond the limit, since the area under the curve there is
+too thin to see at full scale; the bottom row magnifies that area.
+
+- (a) 가까운 쪽 한계가 $LSL$ 이며, 평균에서 $LSL$ 까지의 거리가 $3 C_{pk} = 3$ 이다.
+- (b) 가까운 쪽 한계가 $USL$ 이며, 거리는 (a) 와 같은 3 이다.
+- (c) (a) 의 $LSL$ 아래를 확대한 것이며, 칠한 넓이가 $\Phi(-3) = 0.00135$, 곧 1350 ppm 이다.
+- (d) (b) 의 $USL$ 위를 확대한 것이며, 칠한 넓이가 (c) 와 같은 1350 ppm 이다.
+
+모든 행은 중심에 있는 공정이므로 $k$ 가 0 이고 식 (4) 에 의해 $C_{pk}$ 가 $C_p$ 와 같다. Sigma
+level 은 평균에서 가까운 쪽 한계까지의 거리를 표준편차로 잰 것이며, $3 C_{pk}$ 이고 식 (5) 가
+$\Phi$ 에 넘기는 바로 그 수이다. 이 공정을 중심에서 밀어내면 먼 쪽 꼬리가 무너지고, 남는 것은 그
+이동이 만든 더 작은 $C_{pk}$ 에서 읽은 near tail 열이다.
+
+맨 윗행을 짚어 보면 두 비율이 어디서 나오는지 드러난다. 식 (4) 가
+$C_{pk} = (1 - 0) \times 0.67 = 0.67$ 을 주므로 $CPU$ 와 $CPL$ 이 모두 0.67 이고 sigma level 은
+$3 \times 0.67 = 2.01$ 이며, 표는 이를 2.0 으로 반올림한다. 그러면 식 (5) 는
+$p = \Phi(-2.01) + \Phi(-2.01)$ 이 되고 $\Phi(-2.01) = 0.0222156$ 이므로, 가까운 쪽 꼬리가
+22216 ppm 이고 둘을 합치면 44431 ppm 이다.
+
+1.33 행이 $C_p = 1.33$ 이 흔한 최소 요구치가 되고 $C_{pk} = 1.33$ 이 흔한 목표가 된 이유이다.
+평균과 가까운 쪽 한계 사이에 표준편차 네 개를 두어, 실제 공정이 으레 겪는 흐름을 감당할 여유를 남기기
+때문이다. 맨 아래 행은 six sigma 라는 이름 뒤에 있는 산수이다.
+
+### 3.3. Parts per Million and Yield
+
+1 ppm 이 수율에 주는 뜻은 제품 하나에 든 part 의 개수 $N$ 이 정한다. 불량률 $p$ 로 만든 part $N$ 개가
+모두 양품이어야 제품이 양품이고 part 의 불량이 서로 독립이면, 제품 하나의 불량 part 개수는 binomial
+distribution $B(N, p)$ 를 따르므로 제품의 수율은 불량이 0 개일 확률 $Y = (1 - p)^N$ 이다. $N$ 이 크고
+$p$ 가 작으면 이 분포는 평균 $Np$ 인 Poisson distribution 으로 근사되어 $Y \approx e^{-Np}$ 이다. 여기서 $Np$ 는 Defects per unit (DPU) 이다.
+
+제품 하나가 part 하나이면 $N = 1$ 이고, 1 ppm 은 제품 백만 개 가운데 한 개가 불량이라는 뜻이므로 수율이
+99.9999 % 이다.
+
+1 GB DRAM 은 $2^{33} = 8{,}589{,}934{,}592$ bit 를 가지며, cell 하나가 1 bit 를 저장하므로 cell 이 약
+$8.59 \times 10^{9}$ 개이다. Cell 당 불량률이 1 ppm 이면 chip 하나에 불량 cell 이 평균
+$Np \approx 8590$ 개 생기고, 수율은 $e^{-8590}$ 으로 사실상 0 이며, chip 당 불량률 $1 - Y$ 는 사실상
+1,000,000 ppm 이다. 모든 cell 이 양품인 chip 을 90 % 수율로 얻으려면 cell 당 불량률이
+$p = -\ln(0.9)/N \approx 1.23 \times 10^{-11}$, 곧 $1.23 \times 10^{-5}$ ppm 이어야 하고, 이때 chip 당
+불량률은 $1 - 0.9 = 0.1$, 곧 100,000 ppm 이다. 이 cell 당 불량률을 near tail 비율 $\Phi(-3 C_{pk})$ 로
+환산하면 $C_{pk} \approx 2.23$ 이다. 같은 방법으로 cell 당 1 ppm 은 $C_{pk} \approx 1.58$ 이므로, chip
+하나에 든 cell 의 개수가 수율이 요구하는 $C_{pk}$ 를 1.58 에서 2.23 으로 올린다.
+
+⛔ Cell 당 불량률을 $C_{pk}$ 로 환산할 때의 가정은, 그 $C_{pk}$ 를 잰 특성이 spec 을 벗어나면 cell 이 반드시
+불량이 되고 spec 안에 있으면 양품이 된다는 것이다. 여기에 그 특성이 정규분포를 따르고, 먼 쪽 꼬리가
+가까운 쪽 꼬리 옆에서 무시할 만큼 작다는 가정이 더해진다.
+
+Fig 3 은 part 의 개수에 따라 수율과 $C_{pk}$ 의 관계를 그린 것이다.
+
+<img src="process-capability-index_fig/yield_cpk.png" width="1000" style="max-width: 100%;" alt="Fig 3">
+
+Fig 3. Product yield against the Cpk of each part, for products of 1, 1,000, 1,000,000 and 2^33 parts.
+Each part fails independently at the near tail rate. The dashed line is a 90 % yield and a dot marks
+the Cpk at which each curve reaches it; the dotted line is the Cpk of a 1 ppm near tail.
+
+Part 의 개수가 1 에서 1,000 배씩 늘 때 90 % 수율에 필요한 $C_{pk}$ 는 0.43, 1.24, 1.73 으로 오르고,
+$2^{33}$ 개인 1 GB DRAM 은 2.23 이다. part (cell) 당 불량률 1 ppm 의 선인 $C_{pk} = 1.58$ 에서 part 하나인 제품의 수율은 1 에
+가깝고, part 백만 개인 제품은 $e^{-1} \approx 0.37$ 이며, 1 GB DRAM 은 0 이다.
+
+## 4. Application
+
+### 4.1. Short-Term and Long-Term
+
+이 지수들은 $\sigma$ 의 추정값으로 계산하는데, 그 추정값에는 두 가지가 있다. 부분군 안의 변동으로
+추정하면 짧은 구간에 작용하는 원인만 담기고, 긴 기간의 모든 자료로 추정하면 부분군 사이의 흐름까지
+담긴다. 앞의 것이 $C_p$ 와 $C_{pk}$ 를 주고, 뒤의 것이 성능 지수인 $P_p$ 와 $P_{pk}$ 를 준다. 뒤의
+것은 식 (1) 과 식 (3) 에 장기 추정값을 넣은 같은 정의이다.
+
+장기 추정값이 둘 중 큰 쪽이므로 실무에서 $P_{pk} \le C_{pk}$ 이다. 둘 사이의 간격은 계산의 결함이
+아니라 그 공정이 가진 흐름의 크기이며, 간격이 크다는 것 자체가 발견이다. 둘 중 어느 것을 계산했는지
+밝히지 않고 인용하면 그 수는 쓸 수 없게 된다.
+
+### 4.2. Assumptions
+
+식 (5) 와 Table 2 는 실제 공정이 늘 만족하지는 않는 조건 아래에서만 성립한다.
+
+- 정규성: 꼬리 넓이는 정규분포에서 나오며, 치우쳤거나 한쪽이 막힌 특성은 같은 지수 값에서 다른
+  불량률을 준다.
+- 안정성: 이 지수들이 다음 기간을 설명하는 것은 공정이 관리 상태일 때뿐이므로, 관리도가 먼저이고
+  capability study 가 그 다음이다.
+- 추정: $\mu$ 와 $\sigma$ 는 추정값이므로 지수도 그 자신의 불확실성을 지닌 추정값이며, 흔히 쓰는
+  표본 크기에서 그 폭은 넓다.
+- 양측 규격: $C_p$ 에는 두 한계가 모두 필요하다. 한쪽만 있으면 $CPU$ 나 $CPL$ 을 따로 보고하고
+  $C_p$ 와 $k$ 는 쓰지 않는다.
+
+### 4.3. In the Fab
+
+반도체 공정에서 규격은 대개 측정된 층의 성질에 걸리고, Capability study 는 웨이퍼당 측정값 하나, 흔히
+웨이퍼 평균으로 수행한다. 웨이퍼 안의 산포는 자기 지표를 가진 별개의 관심사이며, 그것을 $\sigma$ 에
+접어 넣으면 서로 다른 조치를 요구하는 두 분산이 섞인다. 식 (4) 가 산포와 치우침을 갈라 놓는 것과 같은
+이치이다.
+
+실무에서의 쓰임은 셋이다. 새 공정이나 장비를 규격에 견주어 승인하는 것, 같은 recipe 를 도는 챔버들을
+비교하는 것, 그리고 측정 주기를 정하는 것이다. $C_{pk}$ 가 높은 공정은 한계 가까이에서 도는 공정보다
+덜 자주 재도 되기 때문이다.
+
+### 4.4. Priority Classes
+
+Fab 이 재는 항목은 하나의 기준으로 지킬 수 있는 것보다 훨씬 많으므로, 무엇을 위해 지키는지로
+등급을 매기고 등급마다 다른 요구치를 건다.
+
+Table 3. Foundry Control Priority and Wafer Acceptance Criteria
+
+| Priority | Control objective | Cpk min | k max | Implied Cp min | Near tail, ppm | Acceptance |
+|---|---|---:|---:|---:|---:|---:|
+| 0 | Product Yield | 1.67 | 0.10 | 1.86 | 0.272 | 100% |
+| 1 | Device Performance | 1.50 | 0.15 | 1.76 | 3.40 | 100% |
+| 2 | Process Performance | 1.33 | 0.20 | 1.66 | 33.0 | 80% |
+| 3 | Monitoring | 1.00 | 0.25 | 1.33 | 1350 | None |
+
+$C_{pk}$ 열은 오래 쓰여 온 최소 공정능력의 사다리를 따른다. 1.33 이 일반적인 최소값이고, 1.50 이
+critical 한 항목의 값이며, 1.67 은 아직 새 공정에 있는 항목의 값이다 [[2](#ref-2)]. Monitoring 은
+그 사다리 아래인 1.00 에 앉는데, 가까운 쪽 꼬리가 이미 1350 ppm 인 자리이며, 이 등급은 제품을
+지키려는 것이 아니라 항목을 관리도에 올려 두려고 있기 때문이다. $k$ 열은 요구치의 나머지 절반이고,
+그것이 무엇을 사는지는 식 (4) 가 말한다. 공정은 요구된 폭에 딱 맞춘 채 목표값 위에 정확히 앉아
+있기만 해도 $C_{pk}$ 를 만족하고 평균이 움직이는 순간 미달이 된다. $k$ 에 상한을 두면
+요구되는 $C_p$ 가 $C_{pk}/(1 - k)$ 로 올라가며, 그것이 공정이 겪을 흐름을 지나면서도 $C_{pk}$ 를
+지키는 여유이다.
+
+<img src="process-capability-index_fig/priority_grades.png" width="1000" style="max-width: 100%;" alt="Fig 4">
+
+Fig 4. The process that sits exactly on each grade, against the same specification, LSL 90 and
+USL 110, drawn on one density scale. The dotted line is the process mean, which the $k$ maximum
+holds below the midpoint, and each panel carries the indices that process realises. The ppm figure
+is the whole fraction outside the specification, so it exceeds the near tail of Table 3 by the far
+tail, which is negligible at every grade.
+
+Acceptance 열은 등급을 항목에서 lot 으로 옮긴다. Lot 이 다음 공정으로 가려면 측정한 웨이퍼 가운데
+규격을 만족해야 하는 비율이다. Priority 0 과 Priority 1 은 미달 웨이퍼를 하나도 허용하지 않고,
+Priority 2 는 다섯에 하나까지 허용하며, Priority 3 은 아무것도 막지 않는다. 그 등급은 항목을 관리도에
+올릴 뿐 그것으로 제품을 합격시키지 않기 때문이다.
+
+함의된 폭은 제품을 지키는 세 등급 사이에서 1.86 대 1.66 으로 별로 달라지지 않는 반면 치우침의
+허용치는 Priority 0 이 Priority 2 보다 두 배 빡빡하므로, 높은 등급이 요구하는 것은 폭이 아니라
+치우침이며 hardware 가 아니라 setpoint 이다. 둘을 한꺼번에 푸는 등급은 Monitoring 하나뿐이다.
+등급은 미달일 때의 조치도 정한다. Priority 0 은 lot 을 잡고 챔버를 생산에서 빼며, Priority 1 은
+lot 이 다음 공정으로 가기 전에 engineering review 를 거치고, Priority 2 는 다음 정기 정비에
+넘기며, Priority 3 은 조치 없이 흐름만 기록한다. 이름과 수는 공표된 표준이 아니라 각 fab 의
+관례이며, 옮겨 가는 것은 그 꼴이다.
+
+## References
+
+<a id="ref-1"></a>
+[1] Kane, V. E. (1986). [Process Capability Indices](https://doi.org/10.1080/00224065.1986.11978984). *Journal of Quality Technology*, 18(1), 41–52.<br>
+<a id="ref-2"></a>
+[2] Montgomery, D. C. (2020). *Introduction to Statistical Quality Control* (8th ed.). Wiley.
+ISBN 978-1-119-72309-7.
+
+---
+
+## Appendix A. Terminology
+
+- **Capability study**: 안정된 공정의 표본에서 지수들을 추정하는 작업.
+- **DPU**: Defects per unit. 제품 하나에 든 불량의 평균 개수이며, part $N$ 개가 각각 불량률 $p$ 이면 $Np$ 이다.
+- **DRAM**: Dynamic Random Access Memory. Cell 하나가 capacitor 의 전하로 1 bit 를 저장하는 memory.
+- **In control**: 통상의 변동 밖에 있는 원인의 신호가 관리도에 나타나지 않는 상태.
+- **Lot**: 공정을 함께 흘러가는 웨이퍼 묶음.
+- **Parts per million**: 규격을 벗어나는 비율에 $10^{6}$ 을 곱한 값.
+- **Performance index**: 표준편차의 장기 추정값으로 계산한 공정능력 지수이며, $P_p$ 와 $P_{pk}$ 로
+  적는다.
+- **Priority class**: 측정 항목에 매기는 등급이며, 자기 공정능력 요구치와 미달 시의 조치를 함께
+  가진다.
+- **Sigma level (z-score)**: 평균에서 가까운 쪽 specification limit 까지의 거리를 표준편차 단위로 잰 것이며, $3 C_{pk}$ 와
+  같다.
+- **Specification limit**: 제품이 만족해야 하는 경계이며, 공정에서 추정하는 것이 아니라 설계가
+  정한다.
+- **Yield**: 만든 제품 가운데 양품의 비율.
+
+## Appendix B. Derivation of Equation (5)
+
+공정은 평균 $\mu$ 와 표준편차 $\sigma$ 인 정규분포를 따르므로 그 밀도는 아래와 같다.
+
+$$f(x) = \frac{1}{\sigma\sqrt{2\pi}} \exp\left( -\frac{(x - \mu)^2}{2\sigma^2} \right) \hspace{19em} (7)$$
+
+한 개는 $LSL$ 아래로 내려가거나 $USL$ 위로 올라가면 불량이다. 두 사건은 함께 일어날 수 없으므로
+규격을 벗어나는 비율은 두 넓이의 합이다.
+
+$$p = \int_{-\infty}^{LSL} f(x) \mathrm{d}x + \int_{USL}^{\infty} f(x) \mathrm{d}x \hspace{19em} (8)$$
+
+$z = (x - \mu)/\sigma$ 로 치환하면 $x = \mu + \sigma z$ 이고
+$\mathrm{d}x = \sigma \mathrm{d}z$ 이므로, 치환이 데려온 $\sigma$ 가 분모의 $\sigma$ 와 약분되어
+피적분함수가 표준정규분포의 밀도 $\varphi$ 가 된다.
+
+$$f(x) \mathrm{d}x = \frac{1}{\sigma\sqrt{2\pi}} \exp\left( -\frac{z^2}{2} \right) \sigma \mathrm{d}z = \varphi(z) \mathrm{d}z, \qquad \Phi(a) = \int_{-\infty}^{a} \varphi(z) \mathrm{d}z \hspace{19em} (9)$$
+
+적분 구간도 치환을 따라 옮겨 가 $x = LSL$ 이 $z = (LSL - \mu)/\sigma$ 가 되고 $x = USL$ 이
+$z = (USL - \mu)/\sigma$ 가 되므로, 식 (8) 은 아래가 된다.
+
+$$p = \int_{-\infty}^{(LSL - \mu)/\sigma} \varphi(z) \mathrm{d}z + \int_{(USL - \mu)/\sigma}^{\infty} \varphi(z) \mathrm{d}z \hspace{19em} (10)$$
+
+첫 적분은 식 (9) 의 정의에 의해 그대로 $\Phi$ 이다. 두 번째는 위쪽 끝이 $+\infty$ 라 먼저 방향을
+뒤집어야 한다. 거기에 $u = -z$ 를 넣으면 구간이 뒤집히고 $\varphi(-u) = \varphi(u)$ 이므로
+피적분함수는 그대로 남아, 임의의 $a$ 에 대해 성립하는 항등식을 얻는다.
+
+$$\int_{a}^{\infty} \varphi(z) \mathrm{d}z = \int_{-\infty}^{-a} \varphi(u) \mathrm{d}u = \Phi(-a) \hspace{19em} (11)$$
+
+$a = (USL - \mu)/\sigma$ 로 이것을 적용하면 식 (10) 의 두 항이 모두 아래쪽 꼬리가 된다.
+
+$$p = \Phi\left( \frac{LSL - \mu}{\sigma} \right) + \Phi\left( -\frac{USL - \mu}{\sigma} \right) \hspace{19em} (12)$$
+
+식 (3) 은 $CPL = (\mu - LSL)/(3\sigma)$ 와 $CPU = (USL - \mu)/(3\sigma)$ 로 정의되며, 이를 옮기면
+$(LSL - \mu)/\sigma = -3 CPL$ 이고 $(USL - \mu)/\sigma = 3 CPU$ 이다. 둘을 식 (12) 에 넣으면 식
+(5) 가 된다. 두 지수가 이미 $\sigma$ 를 품고 있으므로 식에서 $\sigma$ 가 사라진다.
+
+Table 2 의 마지막 두 열은 그 결과의 두 경우이다. 중심에 있는 공정은 $\mu = m$ 이므로 식 (2) 와 식 (3) 에
+의해 $CPU = CPL = C_p$ 이고 두 꼬리가 같아 $p = 2\Phi(-3 C_p)$ 가 된다. 치우친 공정에서는 두 지수
+가운데 작은 쪽이 $C_{pk}$ 이므로 $\Phi(-3 C_{pk})$ 가 가까운 쪽 꼬리 하나이고, 먼 쪽 꼬리는 그
+옆에서 버려도 될 만큼 작다.
