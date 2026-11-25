@@ -1,5 +1,5 @@
 # Scores in Partial Least Squares
-Version 17 | Created: 2026-10-24 | Updated: 2026-11-07 13:46 UTC
+Version 18 | Created: 2026-10-24 | Updated: 2026-11-25 22:52 UTC
 
 - [1. Purpose](#1-purpose)
 - [2. Summary](#2-summary)
@@ -212,7 +212,7 @@ $T^2$ 는 score 가 펼치는 부분공간 안의 변화만 잰다. 식 (4) 의 
 ## References
 
 <a id="ref-1"></a>
-[1] [Lagrange Multiplier Method](https://github.com/ykim2718/AIML/blob/main/Math/Optimization/Lagrange-Multiplier/lagrange-multiplier-ko.md). *AIML* repository, GitHub.
+[1] [Lagrange Multiplier Method](https://github.com/ykim2718/Math/blob/main/Optimization/Lagrange-Multiplier/lagrange-multiplier-ko.md). *Math* repository, GitHub.
 
 ---
 
